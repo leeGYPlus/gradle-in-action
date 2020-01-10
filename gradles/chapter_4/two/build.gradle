@@ -1,3 +1,56 @@
+// 定义变量
+ext.versionFile = file('version.properties')
+
+task loadVersion {
+    println 'loadVersion'
+    project.version = readVersion()
+}
+
+ProjectVersion readVersion() {
+    logger.quiet 'Read the version of Version file'
+    if (!versionFile.exists()) {
+        throw new GradleScriptException("File Not Exist.")
+    }
+    Properties versionProps = new Properties()
+
+    versionFile.withInputStream {
+        stream -> versionProps.load(stream)
+    }
+    new ProjectVersion(versionProps.major.toInteger(), versionProps.minor.toInteger(), versionProps.release.toBoolean())
+}
+
+//version = new ProjectVersion(0,1)
+
+/**
+ * gradle 的生命周期：初始化、配置、执行 task
+ *
+ * 在执行 printlnVersion 时，虽然其他的 task 与该 Task 没有直接的关系（这些没有定义动作的 Task 称为 task 配置），
+ * 但是在配置阶段，所有的 Task 中代码中非 action 的部分都会被执行，
+ * 所以 println version 在配置阶段就已经被执行，打印出结果，而其 action 会在执行阶段执行，具体可以看 打印结果
+ */
+
+/**
+ * 配置阶段
+ * > Configure project :
+ * loadVersion
+ * Read the version of Version file
+ * ProjectVersion{major=0, minor=1, release=false}
+ *
+ * 执行阶段
+ * > Task :printlnVersion
+ * doLast
+ *
+ */
+
+// 执行此 task
+task printlnVersion {
+    println version
+
+    doLast{
+        println 'doLast'
+    }
+}
+
 class ProjectVersion {
     Integer major
     Integer minor
@@ -24,9 +77,4 @@ class ProjectVersion {
                 ", release=" + release +
                 '}';
     }
-}
-
-version = new ProjectVersion(0,1)
-task printlnVersion{
-    println version.toString()
 }
