@@ -34,8 +34,7 @@ ProjectVersion readVersion() {
  * > Configure project :
  * loadVersion
  * Read the version of Version file
- * ProjectVersion{major=0, minor=1, release=false}
- *
+ * ProjectVersion{major=0, minor=1, release=false}*
  * 执行阶段
  * > Task :printlnVersion
  * doLast
@@ -46,8 +45,16 @@ ProjectVersion readVersion() {
 task printlnVersion {
     println version
 
-    doLast{
+    doLast {
         println 'doLast'
+    }
+}
+
+// 执行该 task，对相应的属性设置值，构建该 task 后，再次执行 printlnVersion ，则会发现设置的值发生变化
+task makeReleaseVerson(group: 'versioning', description: 'make a release version for project') {
+    version.release = true
+    ant.propertyfile(file: versionFile) {
+        entry(key: 'release', type: 'string', operation: '=', value: 'true')
     }
 }
 
