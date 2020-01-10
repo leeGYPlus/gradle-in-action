@@ -4,3 +4,5 @@
 .idea
 .externalNativeBuild
 .cxx
+build
+repo

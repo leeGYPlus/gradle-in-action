@@ -51,12 +51,43 @@ task printlnVersion {
 }
 
 // 执行该 task，对相应的属性设置值，构建该 task 后，再次执行 printlnVersion ，则会发现设置的值发生变化
-task makeReleaseVerson(group: 'versioning', description: 'make a release version for project') {
+task makeReleaseVersion(group: 'versioning', description: 'make a release version for project') {
     version.release = true
     ant.propertyfile(file: versionFile) {
         entry(key: 'release', type: 'string', operation: '=', value: 'true')
     }
 }
+
+// 使用 inputs 和 outputs 实现 task 的增量式构建
+//task makeReleaseVersionTest(group: 'versioning', description: 'make a release version for project') {
+//
+//    println version.release
+//    println versionFile
+//    inputs.property('release', version.release)
+//    outputs.file versionFile
+//    println 'makeReleaseVersionTest'
+//    doLast {
+//        println 'makeReleaseVersionTest doLast'
+//        version.release = true
+//        ant.propertyfile(file: versionFile) {
+//            entry(key: 'release', type: 'string', operation: '=', value: 'true')
+//        }
+//    }
+
+//}
+
+task makeReleaseVersionCopy(group: 'versioning', description: 'Makes project a release version.') {
+    inputs.property('release', version.release)
+    outputs.file versionFile
+
+    doLast {
+        version.release = true
+        ant.propertyfile(file: versionFile) {
+            entry(key: 'release', type: 'string', operation: '=', value: 'true')
+        }
+    }
+}
+
 
 class ProjectVersion {
     Integer major
