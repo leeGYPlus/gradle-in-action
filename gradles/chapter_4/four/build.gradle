@@ -1,0 +1,99 @@
+//import javax.inject.Inject
+apply plugin: 'war'
+ext.versionFile = file('version.properties')
+
+// 这里有个需要注意的点：如果完全没有关系的 task ，在配置阶段，其执行顺序为在文件中的顺序,所以 loadVersion 需要在其他 task 前面，定义
+// 因为其他 task 需要 使用到 loadVersion 执行的结果。
+task loadVersion {
+    project.version = readVersion()
+}
+
+ProjectVersion readVersion() {
+    logger.quiet 'Reading the version file.'
+
+    if (!versionFile.exists()) {
+        throw new GradleException("Required version file does not exit: $versionFile.canonicalPath")
+    }
+
+    Properties versionProps = new Properties()
+
+    versionFile.withInputStream { stream ->
+        versionProps.load(stream)
+    }
+
+    new ProjectVersion(versionProps.major.toInteger(), versionProps.minor.toInteger(), versionProps.release.toBoolean())
+}
+
+
+task makeReleaseVersion(group: 'versioning', description: 'Makes project a release version.') {
+    doLast {
+        version.release = true
+        ant.propertyfile(file: versionFile) {
+            entry(key: 'release', type: 'string', operation: '=', value: 'true')
+        }
+    }
+
+}
+
+// 执行此 task
+task printlnVersion {
+    println version
+
+    doLast {
+        println 'doLast'
+    }
+}
+
+
+class ProjectVersion {
+    Integer major
+    Integer minor
+    Boolean release
+
+    ProjectVersion(Integer major, Integer minor) {
+        this.major = major
+        this.minor = minor
+        this.release = Boolean.FALSE
+    }
+
+    ProjectVersion(Integer major, Integer minor, Boolean release) {
+        this(major, minor)
+        this.release = release
+    }
+
+
+    @Override
+    public String toString() {
+        return "ProjectVersion{" +
+                "major=" + major +
+                ", minor=" + minor +
+                ", release=" + release +
+                '}';
+    }
+}
+
+/**
+ * 此处的 war 为 引入 war 插件的属性
+ */
+task createDistribution(type: Zip, dependsOn: makeReleaseVersion) {
+    from war.outputs.files
+
+    from(sourceSets*.allSource) {
+        into 'src'
+    }
+
+    from(rootDir) {
+        include versionFile.name
+    }
+}
+
+task backupReleaseDistribution(type: Copy) {
+    from createDistribution.outputs.files
+    into "$buildDir/backup"
+}
+
+task release(dependsOn: backupReleaseDistribution) {
+    doLast {
+        logger.quiet 'release the project'
+    }
+}
