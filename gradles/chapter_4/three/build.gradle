@@ -2,6 +2,8 @@
 
 ext.versionFile = file('version.properties')
 
+// 这里有个需要注意的点：如果完全没有关系的 task ，在配置阶段，其执行顺序为在文件中的顺序,所以 loadVersion 需要在其他 task 前面，定义
+// 因为其他 task 需要 使用到 loadVersion 执行的结果。
 task loadVersion {
     project.version = readVersion()
 }
@@ -26,8 +28,8 @@ ProjectVersion readVersion() {
 class ReleaseVersionTask extends DefaultTask{
 
     // 通过注解声明 task 的输入和输出
-    @Inject Boolean release
-    @OutPutFile
+    @Input Boolean release
+    @OutputFile
     File destFile
 
     // 在构造器中设置 task 的 group 和 description 属性
@@ -40,16 +42,32 @@ class ReleaseVersionTask extends DefaultTask{
     @TaskAction
     void start(){
         project.version.release = true
-        ant.propertyfile(file: versionFile) {
+        ant.propertyfile(file: destFile) {
             entry(key: 'release', type: 'string', operation: '=', value: 'true')
         }
     }
+
+
 }
 
 task makeReleaseVersion(type: ReleaseVersionTask){
+    // 为 ReleaseVersionTask 的属性赋值，而前提是获得 version，
+    // 在构建配置阶段执行 loadVersion 的配置，对 version 重新赋值，
+    // 所以 version 的值为从 readVersion 中获得。
     release = version.release
     destFile = versionFile
 }
+
+// 执行此 task
+task printlnVersion {
+    println version
+
+    doLast {
+        println 'doLast'
+    }
+}
+
+
 
 class ProjectVersion {
     Integer major
@@ -67,8 +85,22 @@ class ProjectVersion {
         this.release = release
     }
 
+
     @Override
-    String toString() {
-        "$major.$minor${release ? '' : '-SNAPSHOT'}"
+    public String toString() {
+        return "ProjectVersion{" +
+                "major=" + major +
+                ", minor=" + minor +
+                ", release=" + release +
+                '}';
     }
 }
+
+task two{
+    println 'two'
+}
+
+task one{
+    println 'one'
+}
+
