@@ -10,7 +10,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.5.3'
-        classpath 'com.gylee.gradlep.plugin:gradlep:1.0.0'
+//        classpath 'com.gylee.gradlep.plugin:gradlep:1.0.0'
 
     }
 }

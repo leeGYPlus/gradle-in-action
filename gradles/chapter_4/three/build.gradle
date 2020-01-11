@@ -46,8 +46,6 @@ class ReleaseVersionTask extends DefaultTask{
             entry(key: 'release', type: 'string', operation: '=', value: 'true')
         }
     }
-
-
 }
 
 task makeReleaseVersion(type: ReleaseVersionTask){

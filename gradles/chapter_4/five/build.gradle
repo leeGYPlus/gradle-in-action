@@ -83,6 +83,7 @@ class ProjectVersion {
 //    }
 //}
 
+// 通过tasks.addRule ，使用 task 命名规则处理相关动作
 tasks.addRule('increase the version'){ String taskName ->
     if(taskName.startsWith("increase")&& taskName.endsWith("Version")){
         task(taskName).doLast {
