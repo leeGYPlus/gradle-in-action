@@ -73,22 +73,57 @@ tasks.addRule('increase the version') { String taskName ->
     }
 }
 
-task release {
-    doLast {
-        logger.quiet 'Releasing the project...'
-    }
-}
+
 
 /**
  * gradle.taskGraph.whenReady 下，在 task 执行图生成以后，会执行 whenReady 的动作
  */
-gradle.taskGraph.whenReady { TaskExecutionGraph taskExecutionGraph ->
-    if (taskExecutionGraph.hasTask(release)) {
-        if (!version.release) {
-            version.release = true
-            ant.propertyfile(file: versionFile) {
-                entry(key: 'release', type: 'string', operation: '=', value: true)
+//gradle.taskGraph.whenReady { TaskExecutionGraph taskExecutionGraph ->
+//    if (taskExecutionGraph.hasTask(release)) {
+//        if (!version.release) {
+//            version.release = true
+//            ant.propertyfile(file: versionFile) {
+//                entry(key: 'release', type: 'string', operation: '=', value: true)
+//            }
+//        }
+//    }
+//}
+
+/**
+ * 通过 Task 执行图监听器挂接到构建生命周期，在监听器中不能直接获得 Project 的示例变量，
+ * 需要显式的调用 getProject
+ */
+class ReleaseVersionListener implements TaskExecutionGraphListener {
+
+    final static String releaseTaskGraph = ':release'
+
+    @Override
+    void graphPopulated(TaskExecutionGraph graph) {
+        // release task 在执行图中
+        if (graph.hasTask(releaseTaskGraph)) {
+            List<Task> allTasks = graph.allTasks
+            // 从一系列的执行图中找到 release Task
+            Task releaseTask = allTasks.find{it.path == releaseTaskGraph}
+            // 每个 Task 都知道自己所云的 project
+            Project project = releaseTask.project
+            if (!project.version.release) {
+                println "i am in listener"
+                // 显式的调用getProject
+                project.version.release = true
+                project.ant.propertyfile(file: versionFile) {
+                    entry(key: 'release', type: 'string', operation: '=', value: true)
+                }
             }
         }
+    }
+}
+
+
+def releaseVersionListener = new ReleaseVersionListener()
+gradle.taskGraph.addTaskExecutionGraphListener(releaseVersionListener)
+
+task release {
+    doLast {
+        logger.quiet 'Releasing the project...'
     }
 }
