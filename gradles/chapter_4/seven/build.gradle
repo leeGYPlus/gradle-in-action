@@ -79,6 +79,9 @@ task release {
     }
 }
 
+/**
+ * gradle.taskGraph.whenReady 下，在 task 执行图生成以后，会执行 whenReady 的动作
+ */
 gradle.taskGraph.whenReady { TaskExecutionGraph taskExecutionGraph ->
     if (taskExecutionGraph.hasTask(release)) {
         if (!version.release) {
