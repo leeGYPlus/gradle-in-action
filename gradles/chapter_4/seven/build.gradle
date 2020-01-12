@@ -92,6 +92,8 @@ tasks.addRule('increase the version') { String taskName ->
 /**
  * 通过 Task 执行图监听器挂接到构建生命周期，在监听器中不能直接获得 Project 的示例变量，
  * 需要显式的调用 getProject
+ *
+ * 执行时机：任何 Task 执行之前
  */
 class ReleaseVersionListener implements TaskExecutionGraphListener {
 
