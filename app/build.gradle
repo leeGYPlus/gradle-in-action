@@ -51,3 +51,10 @@ task two{
     println examplePrope
     println project.someOtherPrope
 }
+task printDependencies{
+    doLast{
+        configurations.getByName('implementation').each {depency ->
+            println depency
+        }
+    }
+}

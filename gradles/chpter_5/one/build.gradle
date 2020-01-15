@@ -1,0 +1,18 @@
+//自定义配置
+// 使用 gradle dependencies 查看配置
+configurations {
+    cargo {
+        description = 'classpath for cargo ant task'
+        visible = false
+    }
+}
+
+
+task useCustomConfiguration() {
+    doLast {
+        // 通过文件树的方式获得 cargo 配置的所有依赖
+        FileTree cargoDeps = configurations.getByName('cargo').asFileTree
+        ant.taskdef(resource: 'cargo.tasks', classpath: cargoDeps.asPath)
+
+    }
+}

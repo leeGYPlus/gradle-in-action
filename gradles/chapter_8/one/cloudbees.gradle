@@ -1,0 +1,5 @@
+task cloudBeesAppInfo(type: CloudBeesAppInfo) {
+    doLast {
+
+    }
+}
