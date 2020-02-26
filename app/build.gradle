@@ -1,15 +1,18 @@
 apply plugin: 'com.android.application'
-//buildscript {
-//    repositories {
-//
-////        flatDir name: 'libs', dirs: "../build/libs"
-//    }
-//    dependencies {
-//        classpath 'com.gylee.gradlep.plugin:gradlep:1.0.0'
-//    }
-//}
-//apply plugin: 'com.gylee.gradlep'
 
+buildscript {
+    repositories {
+        maven {
+            url uri('../repo')
+        }
+    }
+    dependencies {
+        classpath 'com.gylee.gradleplugin2.plugin:plugin2:1.0.0'
+
+    }
+}
+apply plugin: 'plugintwo'
+//apply from: rootProject.getRootDir().getAbsolutePath() + "/utils.gradle"
 
 android {
     compileSdkVersion 29
@@ -47,14 +50,25 @@ dependencies {
 //    println one
 //}
 
-task two{
+task two {
     println examplePrope
     println project.someOtherPrope
 }
-task printDependencies{
-    doLast{
-        configurations.getByName('implementation').each {depency ->
+task printDependencies {
+    doLast {
+        configurations.getByName('implementation').each { depency ->
             println depency
         }
     }
 }
+
+task testes {
+    doLast {
+        project.android.applicationVariants.each { variant ->
+            println variant
+        }
+    }
+}
+//project.afterEvaluate {
+//    println "getVersionName is $getVersionName"
+//}

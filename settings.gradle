@@ -1,2 +1,3 @@
 include ':app', ':gradlep'
 rootProject.name='gradlePlugin'
+include ':plugin2'

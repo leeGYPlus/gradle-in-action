@@ -1,0 +1,31 @@
+
+// Script 类
+// 解析 XML 时候要引入这个 groovy 的 package
+//
+//import groovy.util.XmlSlurper
+//
+//def initProperties() {
+//    Properties properties = new Properties()
+//    File propertyFile = new File(rootDir.getAbsolutePath() + "/" + "local.properties")
+//    properties.load(propertyFile.newDataInputStream())
+//    gradle.ext.api = properties.getProperty('sdk.api')
+//    gradle.ext.dir = properties.getProperty('sdk.dir')
+//
+//    println "one: ${gradle.api}"
+//    println "two: ${gradle.dir}"
+//}
+//
+//def getVersionName() {
+//    def xmlFile = project.file("AndroidManifest.xml")
+//    println xmlFile.getAbsolutePath()
+//    def rootManifest = new XmlSlurper().parse(xmlFile)
+//    def name =rootManifest['@android:allowBackup']
+//    println "name is $name"
+//    return name
+//}
+//
+//ext {
+//    getVersionName = this.&getVersionName
+////    initProperties
+//
+//}

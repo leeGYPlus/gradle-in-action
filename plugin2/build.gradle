@@ -1,0 +1,28 @@
+apply plugin: 'groovy'
+apply plugin: 'maven'
+
+dependencies {
+    compile gradleApi()
+    compile localGroovy()
+}
+
+repositories {
+    mavenCentral()
+}
+
+
+/**
+ * group 和 version 会被 maven 使用，作为 maven 库的标识，group 会作为库 的 groupId，version 会被作为库的 version，
+ * artifactId 组成即 module 名，
+ */
+
+group = 'com.gylee.gradleplugin2.plugin'
+version = '1.0.0'
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: uri('../repo'))
+        }
+    }
+}

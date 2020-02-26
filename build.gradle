@@ -2,18 +2,22 @@
 
 buildscript {
     repositories {
+        maven {
+            url uri('../repo')
+        }
         google()
         jcenter()
-        maven {
-            url uri('./repo')
-        }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.5.3'
+//        classpath 'com.gylee.gradle_plugin_2.plugin:plugin2:1.0.0'
 //        classpath 'com.gylee.gradlep.plugin:gradlep:1.0.0'
 
     }
 }
+
+
+
 
 allprojects {
     repositories {
@@ -21,6 +25,7 @@ allprojects {
         jcenter()
 
     }
+//    apply from: rootProject.getRootDir().getAbsolutePath() + "/utils.gradle"
 }
 
 task clean(type: Delete) {

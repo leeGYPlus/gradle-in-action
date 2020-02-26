@@ -13,10 +13,10 @@ repositories {
 group = 'com.gylee.gradlep.plugin'
 version = '1.0.0'
 
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: uri('../repo'))
-        }
-    }
-}
+//uploadArchives {
+//    repositories {
+//        mavenDeployer {
+//            repository(url: uri('../repo'))
+//        }
+//    }
+//}
