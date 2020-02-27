@@ -1,17 +1,5 @@
 apply plugin: 'com.android.application'
 
-buildscript {
-    repositories {
-        maven {
-            url uri('../repo')
-        }
-    }
-    dependencies {
-        classpath 'com.gylee.gradleplugin2.plugin:plugin2:1.0.0'
-
-    }
-}
-apply plugin: 'plugintwo'
 //apply from: rootProject.getRootDir().getAbsolutePath() + "/utils.gradle"
 
 android {
@@ -41,6 +29,18 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
 }
+
+buildscript {
+    repositories {
+        maven {
+            url uri('../repo')
+        }
+    }
+    dependencies {
+        classpath 'com.gylee.gradleplugin2.plugin:plugin2:1.0.0'
+    }
+}
+apply plugin: 'plugintwo'
 
 //
 //task one{
