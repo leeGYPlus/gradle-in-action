@@ -74,7 +74,6 @@ tasks.addRule('increase the version') { String taskName ->
 }
 
 
-
 /**
  * gradle.taskGraph.whenReady 下，在 task 执行图生成以后，会执行 whenReady 的动作
  */
@@ -105,7 +104,7 @@ class ReleaseVersionListener implements TaskExecutionGraphListener {
         if (graph.hasTask(releaseTaskGraph)) {
             List<Task> allTasks = graph.allTasks
             // 从一系列的执行图中找到 release Task
-            Task releaseTask = allTasks.find{it.path == releaseTaskGraph}
+            Task releaseTask = allTasks.find { it.path == releaseTaskGraph }
             // 每个 Task 都知道自己所云的 project
             Project project = releaseTask.project
             if (!project.version.release) {
@@ -127,5 +126,12 @@ gradle.taskGraph.addTaskExecutionGraphListener(releaseVersionListener)
 task release {
     doLast {
         logger.quiet 'Releasing the project...'
+    }
+}
+
+gradle.projectsLoaded { Gradle gradle ->
+    gradle.rootProject {
+        apply plugin: ''
+
     }
 }
